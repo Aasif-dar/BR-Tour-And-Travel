@@ -1,26 +1,320 @@
 @import "tailwindcss";
 
+/* ------------------------------------------------------------------
+   BR Tour & Travels — design tokens
+   Palette sampled from the brand logo (Instagram @brtourandtravels_):
+   soft gold #D2A86E, near-black, and white. Neutrals are warmed to
+   sit with the gold; --gold-deep is the accessible text variant of
+   gold on light backgrounds (5.9:1 on ivory).
+   ------------------------------------------------------------------ */
+@theme {
+  --color-ink: #14110d;
+  --color-ink-2: #1c1813;
+  --color-ink-3: #2a241c;
+  --color-gold: #d2a86e;
+  --color-gold-bright: #e0bb85;
+  --color-gold-deep: #7a5a2b;
+  --color-gold-soft: #eadbc0;
+  --color-ivory: #faf6ee;
+  --color-sand: #f3ecdf;
+  --color-line: #e2d6c1;
+  --color-muted: #5f574c;
+  --color-mist: #b9b0a3;
+  --color-danger: #a33a2a;
+  --color-success: #3d6b4a;
+
+  --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-sans: var(--font-manrope), system-ui, sans-serif;
+  --font-arabic: var(--font-amiri), "Amiri", serif;
+
+  --shadow-lift: 0 1px 2px rgb(20 17 13 / 0.06), 0 12px 32px -12px rgb(20 17 13 / 0.22);
+  --shadow-float: 0 30px 60px -30px rgb(20 17 13 / 0.45);
+
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --breakpoint-xs: 26rem;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --header-h: 4.5rem;
+  color-scheme: light;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@media (min-width: 64rem) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --header-h: 5.25rem;
   }
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-h) + 1rem);
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-ivory);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-gold-soft);
+  color: var(--color-ink);
+}
+
+/* Visible, consistent focus ring on every interactive element */
+:focus-visible {
+  outline: 2px solid var(--color-gold-deep);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+.on-dark :focus-visible,
+.on-dark:focus-visible {
+  outline-color: var(--color-gold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@layer components {
+  .container-x {
+    width: 100%;
+    max-width: 82rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 48rem) {
+    .container-x {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  /* Section label: a quiet sentence-case line, not shouted capitals */
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--color-gold-deep);
+  }
+  .on-dark .eyebrow,
+  .eyebrow.on-dark {
+    color: var(--color-gold);
+  }
+
+  .display {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.04;
+    text-wrap: balance;
+  }
+
+  .prose-body {
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--color-muted);
+    text-wrap: pretty;
+  }
+  .on-dark .prose-body {
+    color: var(--color-mist);
+  }
+
+  /* Buttons: square-shouldered, not pills — closer to print than SaaS */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 3rem;
+    padding: 0.8rem 1.5rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    transition:
+      background-color 0.25s var(--ease-out-quint),
+      color 0.25s var(--ease-out-quint),
+      border-color 0.25s var(--ease-out-quint);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  .btn-gold {
+    background: var(--color-gold);
+    color: var(--color-ink);
+  }
+  .btn-gold:hover {
+    background: var(--color-gold-bright);
+  }
+  .btn-ink {
+    background: var(--color-ink);
+    color: var(--color-ivory);
+  }
+  .btn-ink:hover {
+    background: var(--color-gold-deep);
+  }
+  .btn-outline {
+    border-color: currentColor;
+    color: var(--color-ink);
+  }
+  .btn-outline:hover {
+    background: var(--color-ink);
+    color: var(--color-ivory);
+    border-color: var(--color-ink);
+  }
+  .btn-outline-light {
+    border-color: rgb(250 246 238 / 0.55);
+    color: var(--color-ivory);
+  }
+  .btn-outline-light:hover {
+    background: var(--color-ivory);
+    color: var(--color-ink);
+    border-color: var(--color-ivory);
+  }
+
+  /* Text link with a drawn underline */
+  .link-line {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 100% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    padding-bottom: 2px;
+    transition: background-size 0.35s var(--ease-out-quint);
+  }
+  .link-line:hover {
+    background-size: 0% 1px;
+    background-position: 100% 100%;
+  }
+
+  /* Arch frame — echoes the dome in the logo and mosque arcades */
+  .arch {
+    border-radius: 999px 999px 0 0;
+    overflow: hidden;
+  }
+
+  .field-label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--color-ink);
+    margin-bottom: 0.45rem;
+  }
+  .field {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.7rem 0.9rem;
+    background: #fff;
+    border: 1px solid var(--color-line);
+    border-radius: 2px;
+    font-size: 1rem;
+    color: var(--color-ink);
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s;
+  }
+  .field::placeholder {
+    color: #9a9083;
+  }
+  .field:hover {
+    border-color: #cbbb9f;
+  }
+  .field:focus {
+    outline: none;
+    border-color: var(--color-gold-deep);
+    box-shadow: 0 0 0 3px rgb(210 168 110 / 0.3);
+  }
+  .field[aria-invalid="true"] {
+    border-color: var(--color-danger);
+  }
+  select.field {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%237A5A2B' stroke-width='1.5'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.9rem center;
+    padding-right: 2.25rem;
+  }
+  .field-error {
+    margin-top: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--color-danger);
+  }
+}
+
+/* FAQ accordion built on <details>: animate open/close where supported */
+details.faq::details-content {
+  block-size: 0;
+  overflow: hidden;
+  transition:
+    block-size 0.35s var(--ease-out-quint),
+    content-visibility 0.35s allow-discrete;
+}
+details.faq[open]::details-content {
+  block-size: auto;
+}
+@supports (interpolate-size: allow-keywords) {
+  :root {
+    interpolate-size: allow-keywords;
+  }
+}
+details.faq summary::-webkit-details-marker {
+  display: none;
+}
+details.faq summary {
+  list-style: none;
+}
+details.faq[open] .faq-icon {
+  transform: rotate(45deg);
+}
+
+/* Lightbox */
+dialog.lightbox::backdrop {
+  background: rgb(14 12 9 / 0.92);
+}
+dialog.lightbox[open] {
+  animation: fade-in 0.3s var(--ease-out-quint);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+.rise {
+  animation: rise 0.9s var(--ease-out-quint) both;
+}
+.rise-delay-1 {
+  animation-delay: 0.12s;
+}
+.rise-delay-2 {
+  animation-delay: 0.24s;
+}
+.rise-delay-3 {
+  animation-delay: 0.36s;
 }

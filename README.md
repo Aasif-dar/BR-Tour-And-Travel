@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BR Tour & Travels — website
 
-## Getting Started
-
-First, run the development server:
+Hajj and Umrah travel website built with Next.js 16 (App Router, Cache Components), React 19, Tailwind CSS 4 and TypeScript.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run dev     # http://localhost:3000
+npm run build   # production build
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Before going live
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Content marked below is placeholder or sample and must be confirmed by the agency.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| What | Where | Status |
+| --- | --- | --- |
+| Phone, email, address, hours, default dial code | `config/site.ts` → `contact` | `null` (hidden until set) |
+| WhatsApp number | `config/site.ts` → `whatsapp.number` | `null` (all WhatsApp buttons hidden until set) |
+| Licences / Ministry approval | `config/site.ts` → `credentials` | empty — add only once verified |
+| Packages, prices, hotels, itineraries | `data/packages.ts` | **sample** — set `isSample: false` per real package |
+| Testimonials | `data/content.ts` → `testimonials` | empty (tasteful empty state shown) |
+| Agency story | `app/about/page.tsx` | generic — add founding story, team, location |
+| Privacy policy & terms | `app/privacy`, `app/terms` | templates — legal review needed |
+| Official logo | `components/ui/Logo.tsx` | text-based treatment of the Instagram logo |
 
-## Learn More
+## Enquiry form
 
-To learn more about Next.js, take a look at the following resources:
+Submissions are handled by the server action in `app/actions/enquiry.ts`, which validates the input (`lib/enquiry.ts`, shared with the client) and forwards it as JSON to a webhook:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+ENQUIRY_WEBHOOK_URL=https://...      # CRM, Zapier/Make, Formspree, Google Apps Script, your API
+ENQUIRY_WEBHOOK_SECRET=...           # optional, sent as "Authorization: Bearer ..."
+NEXT_PUBLIC_SITE_URL=https://...     # canonical URLs, Open Graph, sitemap
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Until `ENQUIRY_WEBHOOK_URL` is set, the form **does not pretend to succeed**: it tells the visitor the enquiry was not sent and offers Instagram/WhatsApp plus a "copy my details" button. See `.env.example`.
 
-## Deploy on Vercel
+## Editing
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Design tokens** (colours sampled from the logo, fonts, buttons, fields): `app/globals.css`
+- **Photos**: `config/images.ts` — one registry with alt text and licence credits. Current photos are from Wikimedia Commons (CC0 / public domain / CC BY / CC BY-SA) and are credited at `/credits`. Replace with the agency's own photography when available.
+- **Copy**: `data/content.ts` (services, reasons, steps, gallery), `data/faqs.ts`, `data/guides.ts`
+- **Navigation & announcement bar**: `config/site.ts`
